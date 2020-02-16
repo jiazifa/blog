@@ -2,7 +2,7 @@
 import os
 
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from app import create_app
+from app.app import create_app
 
 env: str = os.environ.get('FLASK_ENV') or 'default'
 main_app = create_app(env)

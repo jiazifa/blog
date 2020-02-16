@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+</head>
+<body>
+    {% block mainbody %}{% endblock %}
+
+    {%block footer %} 
+    <footer>
+        <ul class="copyright">
+            <li>Powered by <a href="https://palletsprojects.com/p/flask/" target="_blank">Flask</a></li>
+        </ul>
+    </footer>
+    {% endblock %}
+</body>
+</html>
