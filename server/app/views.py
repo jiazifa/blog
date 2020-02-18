@@ -9,6 +9,9 @@ def load_site_config():
         g.site = {
             "title": "博客",
             "name": "treee_",
+            "icp": "CF5504933",
+            "url": "http://sfaf",
+            "owner": "treee",
         }
 
 def not_found(error: Exception) -> Tuple[str, int]:
