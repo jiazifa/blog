@@ -1,11 +1,18 @@
 {% extends "_layout.html" %}
 
+<!-- main body -->
 {% block mainbody %}
 
+<!-- nav body -->
 {% block nav %}
 <nav class="navbar">
-    
+    {% include "partials/_nav.html" %}
 </nav>
+{% endblock %}
+
+<!-- page body -->
+{% block pagebody %}
+
 {% endblock %}
 
 {% endblock %}
