@@ -5,3 +5,6 @@ body {
     font-weight: normal;
     position: relative;
 }
+.login-container {
+    height: 100vh;
+  }
