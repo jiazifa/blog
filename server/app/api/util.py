@@ -23,7 +23,7 @@ def verify_auth(username_or_token: str, password: Union[None, str]) -> bool:
 
 
 def response_succ(
-    body: Union[Dict[str, Any], List[Any]], toast: Union[str, None]
+    body: Union[Dict[str, Any], List[Any]], toast: Union[str, None] = None
 ) -> str:
     result = {"data": body, "msg": toast, "code": 20000}
     return jsonify(result)

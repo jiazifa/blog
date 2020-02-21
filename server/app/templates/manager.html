@@ -5,22 +5,28 @@
 <div class="container-fluid clearfix">
     <div class="btn-group mb-2 mt-4 float-right">
         <a href="{{url_for('edit')}}" class="btn btn-primary">新建</a>
-      </div>
+    </div>
 </div>
 <div class="container-fluid">
     <ul class="list-group">
+        {% for post in posts %}
         <li class="list-group-item">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title">Title</h3>
-                    <p class="card-text">descriptor</p>
+                    {% if post.title %}
+                    <h5 class="card-title">{{post.title}}</h5>
+                    {% endif %}
+                    {% if post.description %}
+                    <p class="card-text">{{post.description}}</p>
+                    {% endif %}
                 </div>
-                <div class="card-footer">
-                    <button type="button" class="btn btn-primary">编辑</button>
-                    <button type="button" class="btn btn-primary">删除</button>
-                  </div>
+                <div class="card-footer clearfix">
+                    <a href="{{url_for('edit', pid=post.id)}}" class="btn btn-primary float-right">编辑</a>
+                </div>
             </div>
         </li>
+        {% endfor %}
+
     </ul>
 </div>
 

@@ -15,8 +15,8 @@ from flask import (
 from flask.helpers import get_env
 from flask.views import MethodView
 
-from .models import User, Category, db
-from .api.util import verify_auth
+from .models import User, Category, Post, db
+from .api.util import verify_auth, response_succ
 from flask_login import current_user
 
 
@@ -41,12 +41,48 @@ def not_found(error: Exception) -> Tuple[str, int]:
 
 
 def manager_index():
-    return render_template("/manager.html")
+    posts = Post.query.all()
+    return render_template("/manager.html", posts=posts)
 
 
-def edit(pid: Optional[int]):
+def edit():
+    params = request.values or request.get_json()
+    if not params or not params.get("pid"):
+        return render_template("/edit.html")
+    post = Post.query.get(params.get("pid"))
+    return render_template("/edit.html", post=post)
 
-    return render_template("/edit.html")
+
+def add_or_update_post():
+    params = request.values or request.get_json()
+    pid: int = params.get("pid") or None
+    title: str = params.get("title")
+    content: str = params.get("content")
+    description: str = params.get("description")
+    category_id: str = params.get("category_id")
+    current_app.logger.info(params)
+    if not pid:  # add
+        post = Post(
+            title=title,
+            content=content,
+            description=description,
+            category_id=category_id,
+        )
+        db.session.add(post)
+    else:
+        post = Post.query.get(pid)
+        post.title = title
+        post.content = content
+        post.description = description
+        post.category_id = category_id
+    db.session.commit()
+    return response_succ({})
+
+def delete(pid: int):
+    p = Post.query.get(pid)
+    db.session.delete(p)
+    db.session.commit()
+    return response_succ({"pid": pid})
 
 
 class LoginMethodView(MethodView):
@@ -82,7 +118,11 @@ def init_app(app: Flask) -> None:
     app.add_url_rule("/favicon.ico", view_func=favicon_ico)
 
     app.add_url_rule("/m_index", view_func=manager_index, methods=["GET"])
-    app.add_url_rule("/edit", defaults={"pid": None}, view_func=edit, methods=["GET"])
+    app.add_url_rule("/edit", view_func=edit, methods=["GET"])
+    app.add_url_rule("/delete/<int:pid>", view_func=delete)
+    app.add_url_rule(
+        "/addOrUpdate", view_func=add_or_update_post, methods=["POST"],
+    )
     app.add_url_rule(
         "/login", view_func=LoginMethodView.as_view("login"), methods=["POST", "GET"]
     )
