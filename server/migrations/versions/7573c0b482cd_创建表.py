@@ -1,8 +1,8 @@
-"""create tables
+"""创建表
 
-Revision ID: bd71d90d9aa1
+Revision ID: 7573c0b482cd
 Revises: 
-Create Date: 2020-02-20 21:51:47.486077
+Create Date: 2020-02-20 22:51:09.698533
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bd71d90d9aa1'
+revision = '7573c0b482cd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,7 +26,7 @@ def upgrade():
     )
     op.create_table('tag',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('text', sa.Text(length=50), nullable=True),
+    sa.Column('text', sa.String(length=50), nullable=True),
     sa.Column('url', sa.String(length=50), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('text')

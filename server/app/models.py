@@ -99,6 +99,7 @@ class User(db.Model, UserMixin):
         password = kwargs.pop("password", None)
         if password:
             password = generate_password_hash(password)
+            kwargs["password"] = password
         if not kwargs.get('username') and kwargs.get('name'):
             kwargs['username'] = slugify(kwargs['name'])
 
@@ -117,6 +118,7 @@ class User(db.Model, UserMixin):
         if not rv:
             rv = cls(
                 username="admin",
+                name="admin",
                 email=current_app.config["ADMIN_EMAIL"],
                 password=current_app.config["DEFAULT_ADMIN_PASSWORD"],
                 is_admin=True,
@@ -174,7 +176,7 @@ class GetOrNewMixin:
 
 class Tag(db.Model, GetOrNewMixin):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.Text(50), unique=True)
+    text = db.Column(db.String(50), unique=True)
     url = db.Column(db.String(50))
 
     def __init__(self, **kwargs) -> None:

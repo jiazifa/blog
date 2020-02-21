@@ -1,0 +1,27 @@
+{% extends "m_page.html" %}
+
+<!-- page body -->
+{% block pagebody %}
+<div class="container-fluid clearfix">
+    <div class="btn-group mb-2 mt-4 float-right">
+        <a href="{{url_for('edit')}}" class="btn btn-primary">新建</a>
+      </div>
+</div>
+<div class="container-fluid">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Title</h3>
+                    <p class="card-text">descriptor</p>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-primary">编辑</button>
+                    <button type="button" class="btn btn-primary">删除</button>
+                  </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+{% endblock %}

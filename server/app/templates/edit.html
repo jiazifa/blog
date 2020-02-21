@@ -1,0 +1,43 @@
+{% extends "m_page.html" %}
+
+{% block pagebody %}
+
+<div class="container-fluid mb-3">
+    <form action="" method="post">
+        <div class="container-fluid mb-3 clearfix">
+            <button class="btn btn-primary float-right" type="submit"> 保存 </button>
+        </div>
+        <!-- <div class="card mb-1">
+            <div id="preview" class="col bg-light"></div>
+        </div> -->
+        <div class="container-fluid mb-2">
+            {% if post %}
+            <input class="form-control" type="text" name="title" id="input-title" value="{{post.title}}">
+            {% else %}
+            <input class="form-control" type="text" name="title" id="input-title" placeholder="请输入标题" required>
+            {% endif %}
+            
+        </div>
+        <textarea class="col" id="text-input" type="text" oninput="this.editor.update()" rows="6" cols="60"
+            style="height: 100vh;" name="content">
+            {% if post %}
+            {{post.content}}
+            {% else %}
+            你可以的
+            {% endif %}
+        </textarea>
+    </form>
+
+</div>
+<script>
+    function Editor(input, preview) {
+        this.update = function () {
+            preview.innerHTML = marked(input.value);
+        };
+        input.editor = this;
+        this.update();
+    }
+    var $ = function (id) { return document.getElementById(id); };
+    new Editor($("text-input"), $("preview"));
+</script>
+{% endblock %}
