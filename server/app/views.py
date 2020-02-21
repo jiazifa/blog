@@ -84,7 +84,6 @@ def delete(pid: int):
     db.session.commit()
     return response_succ({"pid": pid})
 
-
 class LoginMethodView(MethodView):
     def get(self):
         return render_template("login.html")
@@ -108,8 +107,12 @@ class Dev(MethodView):
 
 class IndexView(MethodView):
     def get(self):
-        return render_template("index.html", name="sadfas")
+        posts = [p.to_dict() for p in Post.query.all()]
+        return render_template("index.html", posts=posts)
 
+def post_detail(pid: int):
+    post = Post.query.get(pid)
+    return render_template("detail.html", post=post)
 
 def init_app(app: Flask) -> None:
     app.add_url_rule("/index", view_func=IndexView.as_view("index"))
@@ -126,6 +129,6 @@ def init_app(app: Flask) -> None:
     app.add_url_rule(
         "/login", view_func=LoginMethodView.as_view("login"), methods=["POST", "GET"]
     )
-
+    app.add_url_rule("/detail/<int:pid>", view_func=post_detail, methods=["GET"])
     app.register_error_handler(404, not_found)
     app.before_request(load_site_config)

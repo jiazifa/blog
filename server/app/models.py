@@ -13,7 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .helpers import get_unix_time_tuple
+from .helpers import get_unix_time_tuple, get_date_from_time_tuple
 
 db: SQLAlchemy = SQLAlchemy()
 

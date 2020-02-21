@@ -1,0 +1,11 @@
+{% extends "_page.html" %}
+
+<!-- page body -->
+{% block pagebody %}
+
+<div class="container-fluid">
+    {%if post %}
+    {{post.title}}
+    {% endif %}
+</div>
+{% endblock %}

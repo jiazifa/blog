@@ -19,7 +19,7 @@ def create_app(env: Optional[str] = None) -> Flask:
     models.init_app(app)
     
     login_manager = LoginManager(app)
-    
+
     @login_manager.user_loader
     def get_user(uid: int):
         return models.User.query.get(uid)
