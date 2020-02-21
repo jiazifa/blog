@@ -29,6 +29,7 @@ def load_site_config():
             "icp": "CF5504933",
             "url": "http://sfaf",
             "owner": "treee",
+            "slogen": "每天进步一点点",
         }
 
 
@@ -38,6 +39,10 @@ def favicon_ico():
 
 def not_found(error: Exception) -> Tuple[str, int]:
     return render_template("404.html"), 404
+
+
+def about_me():
+    return render_template("aboutme.html")
 
 
 def manager_index():
@@ -78,11 +83,13 @@ def add_or_update_post():
     db.session.commit()
     return response_succ({})
 
+
 def delete(pid: int):
     p = Post.query.get(pid)
     db.session.delete(p)
     db.session.commit()
     return response_succ({"pid": pid})
+
 
 class LoginMethodView(MethodView):
     def get(self):
@@ -110,15 +117,18 @@ class IndexView(MethodView):
         posts = [p.to_dict() for p in Post.query.all()]
         return render_template("index.html", posts=posts)
 
+
 def post_detail(pid: int):
     post = Post.query.get(pid)
     return render_template("detail.html", post=post)
+
 
 def init_app(app: Flask) -> None:
     app.add_url_rule("/index", view_func=IndexView.as_view("index"))
     if get_env() == "development":
         app.add_url_rule("/<string:file>", view_func=Dev.as_view("dev"))
     app.add_url_rule("/favicon.ico", view_func=favicon_ico)
+    app.add_url_rule("/aboutme", view_func=about_me, methods=["GET"])
 
     app.add_url_rule("/m_index", view_func=manager_index, methods=["GET"])
     app.add_url_rule("/edit", view_func=edit, methods=["GET"])
