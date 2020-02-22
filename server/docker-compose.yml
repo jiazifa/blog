@@ -1,6 +1,18 @@
 version: "3"
 
 services: 
+    database:
+        restart: always
+        image: mysql:5.7
+        ports: 
+            - "3307:3306"
+        volumes: 
+            - /data/mysql:/var/lib/mysql
+        environment: 
+            - MYSQL_ROOT_PASSWORD=12345678
+            - MYSQL_DATABASE=sky_blog
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=12345678
     web:
         restart: always
         build: .
@@ -9,16 +21,3 @@ services:
             - "9000:5000"
         depends_on: 
             - database
-
-    database:
-        restart: always
-        image: mysql:5.7
-        ports: 
-            - "3307:3306"
-        volumes: 
-            - mysqldata:/var/lib/mysql
-        environment: 
-            - MYSQL_ROOT_PASSWORD=12345678
-            - MYSQL_DATABASE=sky_blog
-            - MYSQL_USER=root
-            - MYSQL_PASSWORD=12345678
