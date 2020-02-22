@@ -1,0 +1,28 @@
+{% extends "_page.html" %}
+
+<!-- page body -->
+{% block pagebody %}
+
+<div class="container-fluid">
+    <ul class="list-group">
+        {% for post in posts %}
+        <li class="list-group-item">
+            <div class="card">
+                <div class="card-body">
+                    {% if post.title %}
+                    <a class="card-title" href="{{url_for('post_detail', pid=post.id)}}">{{post.title}}</a>
+                    {% endif %}
+                    {% if post.description %}
+                    <p class="card-text text-secondary">{{post.description}}</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer clearfix">
+                    <div class="float-left">{{post.last_modified}}</div>
+                    <div class="float-right">Tags</div>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

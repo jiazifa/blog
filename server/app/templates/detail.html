@@ -1,0 +1,43 @@
+{% extends "_page.html" %}
+
+<!-- page body -->
+{% block pagebody %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            {%if post %}
+            <textarea class="col d-none" id="text-input" type="text" placeholder="" oninput="this.editor.update()"
+                rows="6" cols="60"
+                style="height: 100vh;">{%+ if post -%}{{post.content}}{% else %}{% endif %}</textarea>
+            <div class="card-fluid">
+                <blockquote class="blockquote text-center">
+                    <h4 class="mb-0">{{post.title}}</h4>
+                    <footer class="blockquote-footer">{{post.description}}</footer>
+                  </blockquote>
+            </div>
+            <div class="card mb-1" style="min-height: 100vh;">
+                <div id="preview" class="col bg-light"></div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+</div>
+
+<script>
+    var content = "";
+    function Editor(input, preview) {
+        this.update = function () {
+            content = input.value;
+            preview.innerHTML = marked(input.value);
+        };
+        input.editor = this;
+        this.update();
+    }
+    var qbid = function (id) { return document.getElementById(id); };
+    new Editor(qbid("text-input"), qbid("preview"));
+</script>
+{% endblock %}
