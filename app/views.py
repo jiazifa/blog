@@ -15,11 +15,43 @@ from flask import (
     flash,
 )
 import mistune
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import HtmlFormatter
 from flask.helpers import get_env
 from flask.views import MethodView
 from app import helpers
 
 logger = helpers.get_logger(__name__)
+
+def block_code(text, lang, inlinestyles=False, linenos=False):
+    if not lang:
+        text = text.strip()
+        return u'<pre><code>%s</code></pre>\n' % mistune.escape(text)
+
+    try:
+        lexer = get_lexer_by_name(lang, stripall=True)
+        formatter = HtmlFormatter(
+            noclasses=inlinestyles, linenos=linenos
+        )
+        code = highlight(text, lexer, formatter)
+        if linenos:
+            return '<div class="highlight">%s</div>\n' % code
+        return code
+    except:
+        return '<pre class="%s"><code>%s</code></pre>\n' % (
+            lang, mistune.escape(text)
+        )
+
+class HighlightMixin(object):
+    def block_code(self, text, lang):
+        # renderer has an options
+        inlinestyles = self.options.get('inlinestyles')
+        return block_code(text, lang, inlinestyles, False)
+
+
+class TocRenderer(HighlightMixin, mistune.Renderer):
+    pass
 
 def load_all_articles(dir_path: str) -> List[str]:
     all_files = os.listdir(dir_path)
@@ -32,21 +64,26 @@ def load_article_content(path: str) -> str:
         return f.read()
 
 def render_content_to_markdown(content: str) -> str:
-    markdown = mistune.Markdown()
+    renderer = TocRenderer(linenos=True, inlinestyles=False)
+    markdown = mistune.Markdown(escape=True, renderer=renderer)
     return markdown(content)
 
 def article_list() -> List[Dict[str, str]]:
     if "site" not in g:
         return jsonify({'e': 'no site'})
-    dir_path = g.site
+    dir_path = g.site['target_dir']
     whole_paths = load_all_articles(dir_path)
     payload: List[Dict[str, str]] = []
     for path in whole_paths:
+        filename = path.split('/')[-1].split('.')[0]
+        title = filename.split('-')[-1]
+        publish_date = "-".join(filename.split('-')[:-1])
         payload.append(
             {
                 'path': path,
-                'title': (path.split('/')[-1]).split('.')[0],
-                'description': 'desc',
+                'filename': filename,
+                'title': title,
+                'description': publish_date,
                 'last_modified': '昨天'
             }
         )
@@ -57,14 +94,14 @@ def favicon_ico():
 
 def index():
     payload = article_list()
-    return render_template("index.html", payload=payload)
+    return render_template("index.html", title='tree', payload=payload)
 
 def article(title: str):
     a_list = article_list()
     ta = list(filter(lambda t: t['title'] == title, a_list))[0]
     content = load_article_content(ta['path'])
     paylaod = render_content_to_markdown(content)
-    return render_template('detail.html', post={'title': title, 'content': paylaod})
+    return render_template('detail.html', title=title, post={'title': title, 'content': paylaod})
 
 def not_found(error: Exception) -> Tuple[str, int]:
     return render_template("404.html"), 404
@@ -78,13 +115,16 @@ def load_site_config():
         target = fetch_target_dir()
         if not target:
             return
-        g.site = target
+        g.site = {
+            'target_dir': target,
+            'title': 'Tree',
+        }
 
 def about_me():
     return render_template("aboutme.html")
 
 def init_app(app: Flask) -> None:
-    app.add_url_rule("/articles", view_func=index, methods=["GET"])
+    app.add_url_rule("/", view_func=index, methods=["GET"])
     app.add_url_rule("/article/<string:title>", view_func=article, methods=["GET"])
 
     app.add_url_rule("/favicon.ico", view_func=favicon_ico)

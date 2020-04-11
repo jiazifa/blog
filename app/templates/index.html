@@ -1,23 +1,23 @@
 {% extends "_page.html" %}
-
+{% block title %} 博客 {% endblock %}
 <!-- page body -->
 {% block pagebody %}
 
-<div class="container-fluid">
+<div class="container-fluid" style="min-height: 100vh;">
     <ul class="list-group">
         {% for post in payload %}
-        <li class="list-group-item">
-            <div class="card">
-                <a href="{{url_for('article', title=post.title)}}">
-                    <div class="card-body">
-                        {% if post.title %}
-                        <h3>{{post.title}}</h3>
-                        {% endif %}
-                        {% if post.description %}
-                        <p class="card-text text-secondary">{{post.description}}</p>
-                        {% endif %}
-                    </div>
-                </a>
+        <li class="list-group-item border-0 color-f5">
+            <div class="card border-0">
+                <div class="card-body">
+                    {% if post.title %}
+                    <a href="{{url_for('article', title=post.title)}}">
+                        <h5>{{post.title}}</h5>
+                    </a>
+                    {% endif %}
+                    {% if post.description %}
+                    <p class="card-text text-secondary">{{post.description}}</p>
+                    {% endif %}
+                </div>
             </div>
         </li>
         {% endfor %}
