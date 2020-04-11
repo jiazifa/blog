@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Type
 import datetime
-import time
+import time, os
 import logging
 import sys
+from app.config import config_dict, BaseConfig 
 
 from flask import current_app
 
@@ -62,17 +63,20 @@ def get_logger(name: str) -> logging.Logger:
     if not name:
         name = __name__
 
+    env: str = os.environ.get("FLASK_ENV", "default")
+    configObj: Optional[Type[BaseConfig]] = config_dict.get(env)
+    
     has = loggers.get(name)
     if has:
         return has
 
     logger = logging.getLogger(name=name)
-    logger.setLevel(current_app.config["LOG_LEVEL"])
-
     stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setLevel(current_app.config["LOG_LEVEL"])
-    formatter = logging.Formatter(current_app.config["LOGGING_FORMATTER"])
-    stream_handler.setFormatter(formatter)
+    if configObj:
+        logger.setLevel(configObj.LOG_LEVEL)
+        stream_handler.setLevel(configObj.LOG_LEVEL)
+        formatter = logging.Formatter(configObj.LOGGING_FORMATTER)
+        stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
     loggers[name] = logger

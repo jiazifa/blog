@@ -3,7 +3,7 @@ import os
 
 HERE = os.path.dirname(__name__)
 REQUIRED = [
-    "Flask", "mypy"
+    "Flask", "mypy", "mistune"
 ]
 
 setup(

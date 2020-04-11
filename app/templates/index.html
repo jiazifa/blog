@@ -5,21 +5,19 @@
 
 <div class="container-fluid">
     <ul class="list-group">
-        {% for post in posts %}
+        {% for post in payload %}
         <li class="list-group-item">
             <div class="card">
-                <div class="card-body">
-                    {% if post.title %}
-                    <a class="card-title" href="{{url_for('post_detail', pid=post.id)}}">{{post.title}}</a>
-                    {% endif %}
-                    {% if post.description %}
-                    <p class="card-text text-secondary">{{post.description}}</p>
-                    {% endif %}
-                </div>
-                <div class="card-footer clearfix">
-                    <div class="float-left">{{post.last_modified}}</div>
-                    <div class="float-right">Tags</div>
-                </div>
+                <a href="{{url_for('article', title=post.title)}}">
+                    <div class="card-body">
+                        {% if post.title %}
+                        <h3>{{post.title}}</h3>
+                        {% endif %}
+                        {% if post.description %}
+                        <p class="card-text text-secondary">{{post.description}}</p>
+                        {% endif %}
+                    </div>
+                </a>
             </div>
         </li>
         {% endfor %}
